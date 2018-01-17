@@ -1,5 +1,5 @@
 def withDb(String dbName, String postgresVersion, body) {
-  def tempDir = pwd(temp:true) + "/${env.BUILD_ID}/postgres"
+  def tempDir = pwd(temp: true) + "/${env.BUILD_ID}/postgres"
 
   // Here we create a Dockerfile based on the postgres version, but with a user mapping
   // that corresponds to the UID on the local machine. Without this, the postgres
@@ -8,9 +8,9 @@ def withDb(String dbName, String postgresVersion, body) {
   // will instruct the container to create a database for us with the given name.
   def dockerfile = "${tempDir}/Dockerfile"
   def uid = sh(returnStdout: true, script: 'id -u').trim()
-  def postgresUser = "jenkins"
+  def postgresUser = 'jenkins'
   writeFile(
-    file:dockerfile,
+    file: dockerfile,
     text: """
       FROM postgres:${postgresVersion}
       RUN useradd --uid ${uid} --user-group ${postgresUser}
