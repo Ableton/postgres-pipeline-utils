@@ -8,7 +8,7 @@ def withDb(String dbName, String postgresVersion, body) {
   // will instruct the container to create a database for us with the given name.
   def dockerfile = "${tempDir}/Dockerfile"
   def uid = sh(returnStdout: true, script: 'id -u').trim()
-  def postgresUser = "jenkins"
+  def postgresUser = 'jenkins'
   writeFile(
     file: dockerfile,
     text: """
