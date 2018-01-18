@@ -15,6 +15,7 @@ def addStages() {
       },
       junit: {
         sh './gradlew test'
+        junit 'build/test-results/**/*.xml'
       },
     )
   }
