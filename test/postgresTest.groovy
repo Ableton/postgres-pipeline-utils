@@ -30,6 +30,7 @@ class postgresTest extends BasePipelineTest {
 
       error = JenkinsMocks.error
       pwd = JenkinsMocks.pwd
+      retry = JenkinsMocks.retry
       sh = JenkinsMocks.sh
       writeFile = {}
     }
@@ -72,10 +73,8 @@ class postgresTest extends BasePipelineTest {
       assertNotNull(error)
     }
 
-    // The current implementation of postgres.withDb() has a bug where it does not throw
-    // an exception if the container fails to start.
-    // assertTrue(exceptionThrown)
-    // assertFalse(bodyExecuted)
-    // assertNull(bodyResult)
+    assertTrue(exceptionThrown)
+    assertFalse(bodyExecuted)
+    assertNull(bodyResult)
   }
 }

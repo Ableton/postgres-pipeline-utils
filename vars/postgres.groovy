@@ -37,16 +37,9 @@ def withDb(String dbName, String postgresVersion, body) {
     // build node. Note that when using docker.image.inside(), the closure body is run
     // instead of the entrypoint script.
     postgresImage.inside("--link ${c.id}:db") {
-      retries = 30
-      while (retries > 0) {
-        try {
-          sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
-          break
-        }
-        catch (error) {
-          sleep 1
-          retries--
-        }
+      retry(30) {
+        sleep 1
+        sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
       }
     }
 

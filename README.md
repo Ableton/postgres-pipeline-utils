@@ -24,9 +24,7 @@ the node.
 
 The library also makes sure that the container is fully started and ready to communicate
 with before executing the closure body. To do this, it calls `pg_isready` until it
-succeeds. Although it catches and suppresses errors from the failed calls while the
-container is starting, you may see some red X's in Blue Ocean's output. They can be safely
-ignored.
+succeeds.
 
 
 [jenkins-shared-lib-usage]: https://jenkins.io/doc/book/pipeline/shared-libraries/#using-libraries
