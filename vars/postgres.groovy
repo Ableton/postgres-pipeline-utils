@@ -1,5 +1,7 @@
 @SuppressWarnings('MethodReturnTypeRequired')
 def withDb(String dbName, String postgresVersion, Closure body) {
+  @SuppressWarnings('VariableTypeRequired')
+  def bodyResult = null
   String tempDir = pwd(temp: true) + "/${env.BUILD_ID}/postgres"
 
   // Here we create a Dockerfile based on the postgres version, but with a user mapping
@@ -46,8 +48,10 @@ def withDb(String dbName, String postgresVersion, Closure body) {
 
       // Now the database should be up and running, so we can execute the body from
       // outside the container.
-      body.call()
+      bodyResult = body.call()
     }
 
+    deleteDir()
+    return bodyResult
   }
 }

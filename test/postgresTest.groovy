@@ -26,6 +26,7 @@ class postgresTest extends BasePipelineTest {
         JOB_BASE_NAME: 'TestJob',
       ]
 
+      deleteDir = {}
       dir = { String path, Closure body ->
         body()
       }
