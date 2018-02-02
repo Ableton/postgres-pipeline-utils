@@ -1,7 +1,4 @@
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 import com.ableton.DockerMock
@@ -54,28 +51,13 @@ class postgresTest extends BasePipelineTest {
     assertEquals(123, bodyResult)
   }
 
-  @Test
+  @Test(expected = Exception)
   void withDbContainerFail() throws Exception {
     String dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
-    boolean bodyExecuted = false
-    Object bodyResult = null
-    boolean exceptionThrown = false
-    try {
-      bodyResult = postgres.withDb('testdb', '9.6') {
-        bodyExecuted = true
-        return 123
-      }
-    } catch (error) {
-      exceptionThrown = true
-      assertNotNull(error)
-    }
-
-    assertTrue(exceptionThrown)
-    assertFalse(bodyExecuted)
-    assertNull(bodyResult)
+    postgres.withDb('testdb', '9.6') {}
   }
 }
