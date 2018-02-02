@@ -30,23 +30,24 @@ def withDb(String dbName, String postgresVersion, Closure body) {
   // Start the newly built container. The postgres data dir must be mapped to our
   // temporary data directory or else initdb runs into permission problems when trying
   // to chmod the data dir to our custom UID.
-  String dataDir = "${tempDir}/data"
-  sh "mkdir ${dataDir}"
-  postgresImage.withRun("-p 5432:5432 -v ${dataDir}:/var/lib/postgresql/data") { c ->
-    // Wait for the database to come up, for up to 30 seconds. Note that this command is
-    // run from inside a new instance of the postgres container and linked to the database
-    // container. By doing this, the postgres client does not need to be installed on the
-    // build node. Note that when using docker.image.inside(), the closure body is run
-    // instead of the entrypoint script.
-    postgresImage.inside("--link ${c.id}:db") {
-      retry(30) {
-        sleep 1
-        sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
+  dir("${tempDir}/data") {
+    postgresImage.withRun("-p 5432:5432 -v ${pwd()}:/var/lib/postgresql/data") { c ->
+      // Wait for the database to come up, for up to 30 seconds. Note that this command is
+      // run from inside a new instance of the postgres container and linked to the
+      // database container. By doing this, the postgres client does not need to be
+      // installed on the build node. Note that when using docker.image.inside(), the
+      // closure body is run instead of the entrypoint script.
+      postgresImage.inside("--link ${c.id}:db") {
+        retry(30) {
+          sleep 1
+          sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
+        }
       }
+
+      // Now the database should be up and running, so we can execute the body from
+      // outside the container.
+      body.call()
     }
 
-    // Now the database should be up and running, so we can execute the body from outside
-    // the container.
-    body.call()
   }
 }

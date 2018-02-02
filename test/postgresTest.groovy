@@ -26,6 +26,9 @@ class postgresTest extends BasePipelineTest {
         JOB_BASE_NAME: 'TestJob',
       ]
 
+      dir = { String path, Closure body ->
+        body()
+      }
       error = JenkinsMocks.error
       pwd = JenkinsMocks.pwd
       retry = JenkinsMocks.retry
