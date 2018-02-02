@@ -1,7 +1,8 @@
-@Library(['ableton-utils@0.1.0', 'groovylint@0.1.1']) _
+@SuppressWarnings('VariableTypeRequired') // For the _ variable
+@Library(['ableton-utils@0.1.0', 'groovylint@0.3.0']) _
 
 
-def addStages() {
+void addStages() {
   runTheBuilds.timedStage('Checkout') {
     // Print out all environment variables for debugging purposes
     sh 'env'

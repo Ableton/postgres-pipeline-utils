@@ -13,6 +13,7 @@ import org.junit.Test
 
 @SuppressWarnings('ClassName')
 class postgresTest extends BasePipelineTest {
+  @SuppressWarnings('FieldTypeRequired')
   def postgres
 
   @Override
@@ -38,13 +39,13 @@ class postgresTest extends BasePipelineTest {
 
   @Test
   void withDb() throws Exception {
-    def dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
+    String dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
-    def bodyExecuted = false
-    def bodyResult = postgres.withDb('testdb', '9.6') {
+    boolean bodyExecuted = false
+    int bodyResult = postgres.withDb('testdb', '9.6') {
       bodyExecuted = true
       return 123
     }
@@ -55,14 +56,14 @@ class postgresTest extends BasePipelineTest {
 
   @Test
   void withDbContainerFail() throws Exception {
-    def dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
+    String dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
-    def bodyExecuted = false
-    def bodyResult = null
-    def exceptionThrown = false
+    boolean bodyExecuted = false
+    Object bodyResult = null
+    boolean exceptionThrown = false
     try {
       bodyResult = postgres.withDb('testdb', '9.6') {
         bodyExecuted = true
