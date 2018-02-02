@@ -1,7 +1,4 @@
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 import com.ableton.DockerMock
@@ -13,6 +10,7 @@ import org.junit.Test
 
 @SuppressWarnings('ClassName')
 class postgresTest extends BasePipelineTest {
+  @SuppressWarnings('FieldTypeRequired')
   def postgres
 
   @Override
@@ -28,6 +26,10 @@ class postgresTest extends BasePipelineTest {
         JOB_BASE_NAME: 'TestJob',
       ]
 
+      deleteDir = {}
+      dir = { String path, Closure body ->
+        body()
+      }
       error = JenkinsMocks.error
       pwd = JenkinsMocks.pwd
       retry = JenkinsMocks.retry
@@ -38,13 +40,13 @@ class postgresTest extends BasePipelineTest {
 
   @Test
   void withDb() throws Exception {
-    def dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
+    String dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
-    def bodyExecuted = false
-    def bodyResult = postgres.withDb('testdb', '9.6') {
+    boolean bodyExecuted = false
+    int bodyResult = postgres.withDb('testdb', '9.6') {
       bodyExecuted = true
       return 123
     }
@@ -53,28 +55,13 @@ class postgresTest extends BasePipelineTest {
     assertEquals(123, bodyResult)
   }
 
-  @Test
+  @Test(expected = Exception)
   void withDbContainerFail() throws Exception {
-    def dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
+    String dataDir = JenkinsMocks.pwd(temp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
-    def bodyExecuted = false
-    def bodyResult = null
-    def exceptionThrown = false
-    try {
-      bodyResult = postgres.withDb('testdb', '9.6') {
-        bodyExecuted = true
-        return 123
-      }
-    } catch (error) {
-      exceptionThrown = true
-      assertNotNull(error)
-    }
-
-    assertTrue(exceptionThrown)
-    assertFalse(bodyExecuted)
-    assertNull(bodyResult)
+    postgres.withDb('testdb', '9.6') {}
   }
 }
