@@ -11,7 +11,7 @@ class PostgresDocker implements Serializable {
 
     @SuppressWarnings('VariableTypeRequired')
     def bodyResult = null
-    String tempDir = script.pwd(temp: true) + "/${script.env.BUILD_ID}/postgres"
+    String tempDir = script.pwd(tmp: true) + "/${script.env.BUILD_ID}/postgres"
 
     // Here we create a Dockerfile based on the postgres version, but with a user mapping
     // that corresponds to the UID on the local machine. Without this, the postgres
