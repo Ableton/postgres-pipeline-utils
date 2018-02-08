@@ -2,8 +2,8 @@ import com.ableton.PostgresDocker
 
 
 @SuppressWarnings('MethodReturnTypeRequired')
-def withDb(String dbName, String postgresVersion, Closure body) {
-  return new PostgresDocker(script: this, version: postgresVersion).withDb(dbName, body)
+def withDb(String dbName, Closure body) {
+  return new PostgresDocker(script: this).withDb(dbName, body)
 }
 
 
