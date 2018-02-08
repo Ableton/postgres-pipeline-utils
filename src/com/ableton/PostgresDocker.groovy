@@ -43,7 +43,8 @@ class PostgresDocker implements Serializable {
     // temporary data directory or else initdb runs into permission problems when trying
     // to chmod the data dir to our custom UID.
     script.dir("${tempDir}/data") {
-      postgresImage.withRun("-p 5432:5432 -v ${script.pwd()}:/var/lib/postgresql/data") { c ->
+      String dockerArgs = "-p 5432:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
+      postgresImage.withRun(dockerArgs) { c ->
         // Wait for the database to come up, for up to 30 seconds. Note that this command is
         // run from inside a new instance of the postgres container and linked to the
         // database container. By doing this, the postgres client does not need to be
