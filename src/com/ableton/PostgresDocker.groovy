@@ -25,7 +25,7 @@ class PostgresDocker implements Serializable {
   String version = 'latest'
 
   @SuppressWarnings('MethodReturnTypeRequired')
-  def withDb(String dbName, String postgresVersion, Closure body) {
+  def withDb(String dbName, Closure body) {
     assert script
 
     @SuppressWarnings('VariableTypeRequired')
@@ -42,7 +42,7 @@ class PostgresDocker implements Serializable {
     script.writeFile(
       file: dockerfile,
       text: """
-      FROM postgres:${postgresVersion}
+      FROM postgres:${version}
       RUN useradd --uid ${uid} --user-group ${postgresUser}
       ENV POSTGRES_USER=${postgresUser}
       ENV POSTGRES_DB=${dbName}
