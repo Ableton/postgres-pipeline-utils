@@ -46,7 +46,7 @@ class postgresTest extends BasePipelineTest {
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     boolean bodyExecuted = false
-    int bodyResult = postgres.withDb(dbName: 'testdb', version: '9.6') {
+    int bodyResult = postgres.withDb(dbName: 'testdb') {
       bodyExecuted = true
       return 123
     }
@@ -62,6 +62,6 @@ class postgresTest extends BasePipelineTest {
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
-    postgres.withDb(dbName: 'testdb', version: '9.6') {}
+    postgres.withDb(dbName: 'testdb') {}
   }
 }
