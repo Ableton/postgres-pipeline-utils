@@ -6,6 +6,10 @@ class PostgresDocker implements Serializable {
   def script = null
 
   /**
+   * Port to expose on the host for communicating with the Postgres instance.
+   */
+  String port = '5432'
+  /**
    * Username to use for POSTGRES_USER.
    */
   String postgresUser = 'jenkins'
@@ -52,7 +56,7 @@ class PostgresDocker implements Serializable {
     // temporary data directory or else initdb runs into permission problems when trying
     // to chmod the data dir to our custom UID.
     script.dir("${tempDir}/data") {
-      String dockerArgs = "-p 5432:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
+      String dockerArgs = "-p ${port}:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
       postgresImage.withRun(dockerArgs) { c ->
         // Wait for the database to come up, for up to 30 seconds. Note that this command
         // is run from inside a new instance of the postgres container and linked to the
