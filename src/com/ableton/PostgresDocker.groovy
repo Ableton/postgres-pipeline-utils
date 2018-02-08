@@ -18,6 +18,11 @@ class PostgresDocker implements Serializable {
    * automatically determined using a shell call to <pre>id -u</pre>.
    */
   String uid = null
+  /**
+   * Postgres version to use. This value must correspond to a valid tag name for the
+   * Postgres Docker container. See: https://hub.docker.com/r/library/postgres/tags
+   */
+  String version = 'latest'
 
   @SuppressWarnings('MethodReturnTypeRequired')
   def withDb(String dbName, String postgresVersion, Closure body) {
