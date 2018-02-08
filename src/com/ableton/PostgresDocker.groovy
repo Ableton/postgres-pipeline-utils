@@ -5,6 +5,12 @@ class PostgresDocker implements Serializable {
   @SuppressWarnings('FieldTypeRequired')
   def script = null
 
+  /**
+   * UID to use when for the Docker user mapping. If null, then the current user will be
+   * automatically determined using a shell call to <pre>id -u</pre>.
+   */
+  String uid = null
+
   @SuppressWarnings('MethodReturnTypeRequired')
   def withDb(String dbName, String postgresVersion, Closure body) {
     assert script
@@ -19,7 +25,7 @@ class PostgresDocker implements Serializable {
     // Also, while we're at it, we can define the POSTGRES_DB environment variable which
     // will instruct the container to create a database for us with the given name.
     String dockerfile = "${tempDir}/Dockerfile"
-    String uid = script.sh(returnStdout: true, script: 'id -u').trim()
+    String uid = this.uid ?: script.sh(returnStdout: true, script: 'id -u').trim()
     String postgresUser = 'jenkins'
     script.writeFile(
       file: dockerfile,
