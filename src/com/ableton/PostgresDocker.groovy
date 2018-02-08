@@ -27,6 +27,7 @@ class PostgresDocker implements Serializable {
   @SuppressWarnings('MethodReturnTypeRequired')
   def withDb(String dbName, Closure body) {
     assert script
+    assert dbName
 
     @SuppressWarnings('VariableTypeRequired')
     def bodyResult = null
