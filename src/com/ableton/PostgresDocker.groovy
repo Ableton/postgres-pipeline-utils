@@ -45,8 +45,8 @@ class PostgresDocker implements Serializable {
     script.dir("${tempDir}/data") {
       String dockerArgs = "-p 5432:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
       postgresImage.withRun(dockerArgs) { c ->
-        // Wait for the database to come up, for up to 30 seconds. Note that this command is
-        // run from inside a new instance of the postgres container and linked to the
+        // Wait for the database to come up, for up to 30 seconds. Note that this command
+        // is run from inside a new instance of the postgres container and linked to the
         // database container. By doing this, the postgres client does not need to be
         // installed on the build node. Note that when using docker.image.inside(), the
         // closure body is run instead of the entrypoint script.
