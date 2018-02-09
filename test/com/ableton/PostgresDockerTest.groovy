@@ -75,4 +75,35 @@ class PostgresDockerTest extends BasePipelineTest {
     PostgresDocker postgres = new PostgresDocker(script: script)
     postgres.withDb('testdb') {}
   }
+
+  @Test(expected = AssertionError)
+  void withDbNoScript() throws Exception {
+    PostgresDocker postgres = new PostgresDocker()
+    postgres.withDb('testdb') {}
+  }
+
+  @Test(expected = AssertionError)
+  void withDbNoDbName() throws Exception {
+    PostgresDocker postgres = new PostgresDocker(script: script)
+    postgres.withDb('') {}
+  }
+
+  @Test
+  void withDbCustomPort() throws Exception {
+    JenkinsMocks.addShMock('id -u', '1000', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+
+    PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
+    postgres.withDb('testdb') {}
+  }
+
+  @Test
+  void withDbCustomUid() throws Exception {
+    // Add a mock for `id -u` that would fail if invoked
+    JenkinsMocks.addShMock('id -u', null, 1)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+
+    PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
+    postgres.withDb('testdb') {}
+  }
 }
