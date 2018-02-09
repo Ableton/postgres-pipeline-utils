@@ -36,11 +36,11 @@ class PostgresDocker implements Serializable {
     String pwd = script.pwd()
     String tempDir = script.pwd(tmp: true) + "/${script.env.BUILD_ID}/postgres"
     script.dir(tempDir) {
-      // Here we create a Dockerfile based on the postgres version, but with a user mapping
-      // that corresponds to the UID on the local machine. Without this, the postgres
-      // container runs into all sorts of weird problems during initialization.
-      // Also, while we're at it, we can define the POSTGRES_DB environment variable which
-      // will instruct the container to create a database for us with the given name.
+      // Here we create a Dockerfile based on the postgres version, but with a custom UID
+      // mapping. Without this, the postgres container runs into all sorts of weird
+      // problems during initialization. Also, while we're at it, we can define the
+      // POSTGRES_DB environment variable which will instruct the container to create
+      // a database for us with the given name.
       String uid = this.uid ?: script.sh(returnStdout: true, script: 'id -u').trim()
       script.writeFile(
         file: 'Dockerfile',
@@ -66,7 +66,7 @@ class PostgresDocker implements Serializable {
       script.dir('data') {
         String dockerArgs = "-p ${port}:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
         postgresImage.withRun(dockerArgs) { c ->
-          // Wait for the database to come up, for up to 30 seconds. Note that this command
+          // Wait for the database to come up for up to 30 seconds. Note that this command
           // is run from inside a new instance of the postgres container and linked to the
           // database container. By doing this, the postgres client does not need to be
           // installed on the build node. Note that when using docker.image.inside(), the
