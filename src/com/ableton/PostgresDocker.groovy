@@ -41,10 +41,9 @@ class PostgresDocker implements Serializable {
       // container runs into all sorts of weird problems during initialization.
       // Also, while we're at it, we can define the POSTGRES_DB environment variable which
       // will instruct the container to create a database for us with the given name.
-      String dockerfile = "${tempDir}/Dockerfile"
       String uid = this.uid ?: script.sh(returnStdout: true, script: 'id -u').trim()
       script.writeFile(
-        file: dockerfile,
+        file: 'Dockerfile',
         text: """
         FROM postgres:${version}
         RUN useradd --uid ${uid} --user-group ${postgresUser}
@@ -59,12 +58,12 @@ class PostgresDocker implements Serializable {
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
       @SuppressWarnings('VariableTypeRequired')
       def postgresImage =
-        script.docker.build("${imageName}:${script.env.BUILD_ID}", "-f ${dockerfile} .")
+        script.docker.build("${imageName}:${script.env.BUILD_ID}", '-f Dockerfile .')
 
       // Start the newly built container. The postgres data dir must be mapped to our
       // temporary data directory or else initdb runs into permission problems when trying
       // to chmod the data dir to our custom UID.
-      script.dir("${tempDir}/data") {
+      script.dir('data') {
         String dockerArgs = "-p ${port}:5432 -v ${script.pwd()}:/var/lib/postgresql/data"
         postgresImage.withRun(dockerArgs) { c ->
           // Wait for the database to come up, for up to 30 seconds. Note that this command
