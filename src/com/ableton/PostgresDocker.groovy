@@ -41,7 +41,8 @@ class PostgresDocker implements Serializable {
 
     // Get the current directory so that the closure body is executed in the right place
     String pwd = script.pwd()
-    String tempDir = script.pwd(tmp: true) + "/${script.env.BUILD_ID}/postgres"
+    String tempDir = script.pwd(tmp: true) + "/${script.env.BUILD_ID}/postgres-" +
+      getRandomDigitString(8, randomSeed)
     script.dir(tempDir) {
       // Here we create a Dockerfile based on the postgres version, but with a custom UID
       // mapping. Without this, the postgres container runs into all sorts of weird
