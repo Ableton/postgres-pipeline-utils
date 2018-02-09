@@ -1,6 +1,7 @@
 package com.ableton
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotEquals
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
@@ -105,5 +106,28 @@ class PostgresDockerTest extends BasePipelineTest {
 
     PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
     postgres.withDb('testdb') {}
+  }
+
+  @Test
+  void getRandomDigitString() throws Exception {
+    assertEquals('0897531194', PostgresDocker.getRandomDigitString(10, 0))
+  }
+
+  @Test
+  void getRandomDigitStringIsRandom() throws Exception {
+    // Ensure that allocating two objects in rapid succession will yield two different
+    // random number generators. Naively seeding the random number generator with
+    // System.currentTimeMillis() would not guarantee this to be the case.
+    PostgresDocker pd1 = new PostgresDocker(script: script)
+    PostgresDocker pd2 = new PostgresDocker(script: script)
+    assertNotEquals(
+      pd1.getRandomDigitString(4, pd1.randomSeed),
+      pd2.getRandomDigitString(4, pd2.randomSeed)
+    )
+  }
+
+  @Test(expected = IllegalArgumentException)
+  void getRandomDigitStringInvalidLength() throws Exception {
+    PostgresDocker.getRandomDigitString(0, 0)
   }
 }

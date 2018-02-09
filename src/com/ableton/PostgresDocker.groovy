@@ -24,6 +24,13 @@ class PostgresDocker implements Serializable {
    */
   String version = 'latest'
 
+  /**
+   * Seed for random number generator. Dy default, a unique seed will be used based on the
+   * current time and the object's hashCode. Normally you shouldn't need to touch this
+   * field.
+   */
+  protected long randomSeed = System.currentTimeMillis() * this.hashCode()
+
   @SuppressWarnings('MethodReturnTypeRequired')
   def withDb(String dbName, Closure body) {
     assert script
@@ -88,5 +95,23 @@ class PostgresDocker implements Serializable {
       script.deleteDir()
       return bodyResult
     }
+  }
+
+  /**
+   * Generates a string of random digits
+   * @param length Number of characters to produce
+   * @param seed Random seed (defaults to system time in milliseconds)
+   */
+  protected static String getRandomDigitString(int length, long seed) {
+    if (length <= 0) {
+      throw new IllegalArgumentException('Invalid string length')
+    }
+    String pool = '0123456789'
+    @SuppressWarnings('InsecureRandom')
+    Random random = new Random(seed)
+    List randomChars = (0..length - 1).collect {
+      pool[random.nextInt(pool.size())]
+    }
+    return randomChars.join('')
   }
 }
