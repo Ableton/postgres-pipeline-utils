@@ -95,7 +95,26 @@ class PostgresDockerTest extends BasePipelineTest {
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
-    postgres.withDb('testdb') {}
+    postgres.withDb('testdb') { port ->
+      assertEquals('1234', port)
+    }
+  }
+
+  @Test
+  void withDbRandomPort() throws Exception {
+    // Expected output given a seed of 1
+    String expectedPort = '15873'
+    JenkinsMocks.addShMock('id -u', '1000', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+
+    PostgresDocker postgres = new PostgresDocker(
+      script: script,
+      port: null,
+      randomSeed: 1,
+    )
+    postgres.withDb('testdb') { port ->
+      assertEquals(expectedPort, port)
+    }
   }
 
   @Test

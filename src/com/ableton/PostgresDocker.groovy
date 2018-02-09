@@ -6,7 +6,10 @@ class PostgresDocker implements Serializable {
   def script = null
 
   /**
-   * Port to expose on the host for communicating with the Postgres instance.
+   * Port to expose on the host for communicating with the Postgres instance. If null,
+   * then a random port number between 10000-19999 will be used. In either case, the
+   * resulting port will be passed as an argument to the closure argument of
+   * {@link PostgresDocker#withDb} so that the caller can connect to the database.
    */
   String port = '5432'
   /**
@@ -49,6 +52,7 @@ class PostgresDocker implements Serializable {
       // problems during initialization. Also, while we're at it, we can define the
       // POSTGRES_DB environment variable which will instruct the container to create
       // a database for us with the given name.
+      String port = this.port ?: '1' + getRandomDigitString(4, randomSeed)
       String uid = this.uid ?: script.sh(returnStdout: true, script: 'id -u').trim()
       script.writeFile(
         file: 'Dockerfile',
@@ -82,6 +86,8 @@ class PostgresDocker implements Serializable {
           postgresImage.inside("--link ${c.id}:db") {
             script.retry(30) {
               script.sleep 1
+              // This environment variable exposed by Docker always uses the port number
+              // which is exposed (ie, the postgres port).
               script.sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
             }
           }
@@ -89,7 +95,7 @@ class PostgresDocker implements Serializable {
           // Now the database should be up and running, so we can execute the body from
           // outside the container.
           script.dir(pwd) {
-            bodyResult = body.call()
+            bodyResult = body.call(port)
           }
         }
       }
