@@ -57,14 +57,14 @@ class PostgresDocker implements Serializable {
       script.writeFile(
         file: 'Dockerfile',
         text: """
-        FROM postgres:${version}
-        RUN useradd --uid ${uid} --user-group ${postgresUser}
-        ENV POSTGRES_USER=${postgresUser}
-        ENV POSTGRES_DB=${dbName}
-        USER ${postgresUser}
-        EXPOSE 5432
-        ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
-      """
+          FROM postgres:${version}
+          RUN useradd --uid ${uid} --user-group ${postgresUser}
+          ENV POSTGRES_USER=${postgresUser}
+          ENV POSTGRES_DB=${dbName}
+          USER ${postgresUser}
+          EXPOSE 5432
+          ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
+        """
       )
 
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
