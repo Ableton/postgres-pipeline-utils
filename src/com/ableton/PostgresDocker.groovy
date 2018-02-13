@@ -57,14 +57,14 @@ class PostgresDocker implements Serializable {
       script.writeFile(
         file: 'Dockerfile',
         text: """
-        FROM postgres:${version}
-        RUN useradd --uid ${uid} --user-group ${postgresUser}
-        ENV POSTGRES_USER=${postgresUser}
-        ENV POSTGRES_DB=${dbName}
-        USER ${postgresUser}
-        EXPOSE 5432
-        ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
-      """
+          FROM postgres:${version}
+          RUN useradd --uid ${uid} --user-group ${postgresUser}
+          ENV POSTGRES_USER=${postgresUser}
+          ENV POSTGRES_DB=${dbName}
+          USER ${postgresUser}
+          EXPOSE 5432
+          ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
+        """
       )
 
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
@@ -88,7 +88,7 @@ class PostgresDocker implements Serializable {
               script.sleep 1
               // This environment variable exposed by Docker always uses the port number
               // which is exposed (ie, the postgres port).
-              script.sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
+              script.sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR -p ${port}"
             }
           }
 
