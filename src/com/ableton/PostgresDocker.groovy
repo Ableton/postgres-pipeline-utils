@@ -57,14 +57,14 @@ class PostgresDocker implements Serializable {
       script.writeFile(
         file: 'Dockerfile',
         text: """
-        FROM postgres:${version}
-        RUN useradd --uid ${uid} --user-group ${postgresUser}
-        ENV POSTGRES_USER=${postgresUser}
-        ENV POSTGRES_DB=${dbName}
-        USER ${postgresUser}
-        EXPOSE 5432
-        ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
-      """
+          FROM postgres:${version}
+          RUN useradd --uid ${uid} --user-group ${postgresUser}
+          ENV POSTGRES_USER=${postgresUser}
+          ENV POSTGRES_DB=${dbName}
+          USER ${postgresUser}
+          EXPOSE 5432
+          ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
+        """
       )
 
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
@@ -83,7 +83,7 @@ class PostgresDocker implements Serializable {
           // database container. By doing this, the postgres client does not need to be
           // installed on the build node. Note that when using docker.image.inside(), the
           // closure body is run instead of the entrypoint script.
-          postgresImage.inside("--link ${c.id}:db") {
+          script.docker.image("postgres:${version}").inside("--link ${c.id}:db") {
             script.retry(30) {
               script.sleep 1
               // This environment variable exposed by Docker always uses the port number
