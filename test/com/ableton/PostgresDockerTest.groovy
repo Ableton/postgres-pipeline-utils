@@ -53,7 +53,7 @@ class PostgresDockerTest extends BasePipelineTest {
     String dataDir = JenkinsMocks.pwd(tmp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR -p 5432", '', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script)
     boolean bodyExecuted = false
@@ -71,7 +71,7 @@ class PostgresDockerTest extends BasePipelineTest {
     String dataDir = JenkinsMocks.pwd(tmp: true) + '/1/postgres/data'
     JenkinsMocks.addShMock('id -u', '1000', 0)
     JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR -p 5432", '', 1)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
     PostgresDocker postgres = new PostgresDocker(script: script)
     postgres.withDb('testdb') {}
@@ -92,7 +92,7 @@ class PostgresDockerTest extends BasePipelineTest {
   @Test
   void withDbCustomPort() throws Exception {
     JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR -p 1234", '', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
     postgres.withDb('testdb') { port ->
@@ -105,8 +105,7 @@ class PostgresDockerTest extends BasePipelineTest {
     // Expected output given a seed of 1
     String expectedPort = '15873'
     JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock(
-      "pg_isready -h \$DB_PORT_5432_TCP_ADDR -p ${expectedPort}", '', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(
       script: script,
@@ -122,7 +121,7 @@ class PostgresDockerTest extends BasePipelineTest {
   void withDbCustomUid() throws Exception {
     // Add a mock for `id -u` that would fail if invoked
     JenkinsMocks.addShMock('id -u', null, 1)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR -p 5432", '', 0)
+    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
     postgres.withDb('testdb') {}
