@@ -1,6 +1,10 @@
 package com.ableton
 
 
+/**
+ * Class for executing a closure with a connection to a PostgreSQL database in a Docker
+ * container.
+ */
 class PostgresDocker implements Serializable {
   @SuppressWarnings('FieldTypeRequired')
   def script = null
@@ -34,6 +38,15 @@ class PostgresDocker implements Serializable {
    */
   protected long randomSeed = System.currentTimeMillis() * this.hashCode()
 
+  /**
+   * Execute a closure with a connection to a PostgreSQL database running in a Docker
+   * container. The database will be stopped and all temporary files deleted when the
+   * closure finishes executing.
+   *
+   * @param dbName Database name.
+   * @param body Closure to execute.
+   * @return Result of executing closure {@code body}.
+   */
   @SuppressWarnings('MethodReturnTypeRequired')
   def withDb(String dbName, Closure body) {
     assert script
