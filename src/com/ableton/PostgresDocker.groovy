@@ -57,8 +57,8 @@ class PostgresDocker implements Serializable {
 
     // Get the current directory so that the closure body is executed in the right place
     String pwd = script.pwd()
-    String tempDir = script.pwd(tmp: true) + "/${script.env.BUILD_ID}/postgres-" +
-      getRandomDigitString(8, randomSeed)
+    String random = getRandomDigitString(8, randomSeed)
+    String tempDir = "${script.pwd(tmp: true)}/${script.env.BUILD_ID}/postgres-${random}"
     script.dir(tempDir) {
       // Here we create a Dockerfile based on the postgres version, but with a custom UID
       // mapping. Without this, the postgres container runs into all sorts of weird
@@ -82,8 +82,10 @@ class PostgresDocker implements Serializable {
 
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
       @SuppressWarnings('VariableTypeRequired')
-      def postgresImage =
-        script.docker.build("${imageName}:${script.env.BUILD_ID}", '-f Dockerfile .')
+      def postgresImage = script.docker.build(
+        "${imageName}:${script.env.BUILD_ID}-${random}",
+        '-f Dockerfile .'
+      )
 
       // Start the newly built container. The postgres data dir must be mapped to our
       // temporary data directory or else initdb runs into permission problems when trying
