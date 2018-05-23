@@ -98,7 +98,7 @@ class PostgresDocker implements Serializable {
           // database container. By doing this, the postgres client does not need to be
           // installed on the build node. Note that when using docker.image.inside(), the
           // closure body is run instead of the entrypoint script.
-          postgresImage.inside("--link ${c.id}:db") {
+          postgresImage.inside("--link ${c.id}:db --entrypoint=") {
             script.retry(30) {
               script.sleep 1
               // This environment variable exposed by Docker always uses the port number
