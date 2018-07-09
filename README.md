@@ -26,5 +26,11 @@ The library also makes sure that the container is fully started and ready to com
 with before executing the closure body. To do this, it calls `pg_isready` until it
 succeeds.
 
+## Building and Testing
+
+The `postgres-pipeline-utils` library can be developed locally using the provided Gradle
+wrapper. Likewise, the Gradle project can be imported by an IDE like IntelliJ IDEA. For
+this, you'll need the Groovy plugin enabled in IDEA and to install Groovy SDK.
+
 
 [jenkins-shared-lib-usage]: https://jenkins.io/doc/book/pipeline/shared-libraries/#using-libraries
