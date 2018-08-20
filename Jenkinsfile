@@ -26,7 +26,7 @@ runTheBuilds.runDevToolsProject(
     runTheBuilds.withBranches(branches: ['master'], acceptPullRequests: false) {
       parallel(failFast: false,
         groovydoc: {
-          docs.publish(data['docs'], 'AbletonDevTools/ableton-pipeline-utils')
+          docs.publish(data['docs'], 'AbletonDevTools/postgres-pipeline-utils')
         },
         version: {
           String versionNumber = readFile('VERSION').trim()
