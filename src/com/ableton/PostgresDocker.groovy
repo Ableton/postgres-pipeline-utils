@@ -44,7 +44,10 @@ class PostgresDocker implements Serializable {
    * closure finishes executing.
    *
    * @param dbName Database name.
-   * @param body Closure to execute.
+   * @param body Closure to execute. This closure will be passed the following parameters:
+   *             <ul>
+   *               <li>{@code port}: The port which Postgres is running on.</li>
+   *             </ul>
    * @return Result of executing closure {@code body}.
    */
   @SuppressWarnings('MethodReturnTypeRequired')
