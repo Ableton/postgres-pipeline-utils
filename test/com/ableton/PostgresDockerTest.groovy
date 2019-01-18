@@ -57,8 +57,10 @@ class PostgresDockerTest extends BasePipelineTest {
 
     PostgresDocker postgres = new PostgresDocker(script: script)
     boolean bodyExecuted = false
-    int bodyResult = postgres.withDb('testdb') {
+    int bodyResult = postgres.withDb('testdb') { port, id ->
       bodyExecuted = true
+      assertEquals('5432', port)
+      assertEquals('mock-container', id)
       return 123
     }
 
@@ -95,8 +97,9 @@ class PostgresDockerTest extends BasePipelineTest {
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
-    postgres.withDb('testdb') { port ->
+    postgres.withDb('testdb') { port, id ->
       assertEquals('1234', port)
+      assertEquals('mock-container', id)
     }
   }
 
@@ -112,8 +115,9 @@ class PostgresDockerTest extends BasePipelineTest {
       port: null,
       randomSeed: 1,
     )
-    postgres.withDb('testdb') { port ->
+    postgres.withDb('testdb') { port, id ->
       assertEquals(expectedPort, port)
+      assertEquals('mock-container', id)
     }
   }
 
@@ -124,7 +128,7 @@ class PostgresDockerTest extends BasePipelineTest {
     JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
-    postgres.withDb('testdb') {}
+    postgres.withDb('testdb') { port, id -> }
   }
 
   @Test

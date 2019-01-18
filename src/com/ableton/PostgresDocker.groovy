@@ -44,7 +44,11 @@ class PostgresDocker implements Serializable {
    * closure finishes executing.
    *
    * @param dbName Database name.
-   * @param body Closure to execute.
+   * @param body Closure to execute. This closure will be passed the following parameters:
+   *             <ul>
+   *               <li>{@code port}: The port which Postgres is running on.</li>
+   *               <li>{@code id}: The ID of the Postgres Docker container.</li>
+   *             </ul>
    * @return Result of executing closure {@code body}.
    */
   @SuppressWarnings('MethodReturnTypeRequired')
@@ -110,7 +114,7 @@ class PostgresDocker implements Serializable {
           // Now the database should be up and running, so we can execute the body from
           // outside the container.
           script.dir(pwd) {
-            bodyResult = body.call(port)
+            bodyResult = body.call(port, c.id)
           }
         }
       }
