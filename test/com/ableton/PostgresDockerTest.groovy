@@ -131,6 +131,16 @@ class PostgresDockerTest extends BasePipelineTest {
     postgres.withDb('testdb') { port, id -> }
   }
 
+  @Test(expected = AssertionError)
+  void withLinkedContainerNoImage() throws Exception {
+    new PostgresDocker(script: script).withLinkedContainer(null, 'testdb') {}
+  }
+
+  @Test(expected = AssertionError)
+  void withLinkedContainerNoDbName() throws Exception {
+    new PostgresDocker(script: script).withLinkedContainer('mock-image', null) {}
+  }
+
   @Test
   void getRandomDigitString() throws Exception {
     assertEquals('0897531194', PostgresDocker.getRandomDigitString(10, 0))

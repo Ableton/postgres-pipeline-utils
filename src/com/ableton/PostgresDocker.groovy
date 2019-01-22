@@ -124,6 +124,37 @@ class PostgresDocker implements Serializable {
   }
 
   /**
+   * Execute a closure with a running Docker image linked to a PostgreSQL container. Both
+   * containers will be stopped and all temporary PostgreSQL files will be deleted when
+   * the closure finishes executing.
+   *
+   * @param image Docker image. This must be created by the {@code docker} singleton.
+   * @param dbName Database name.
+   * @param dockerArgs List of arguments to pass to the user-specified Docker image.
+   * @param body Closure to execute. This closure will be passed the following parameters:
+   *             <ul>
+   *               <li>
+   *                 {@code port}: The port which Postgres is running on. This value
+   *                 should be ignored. It is passed from the {@code withDb} function, but
+   *                 due to the way that linked containers work, the exposed port is not
+   *                 needed and the port will always be the default value of 5432.
+   *               </li>
+   *               <li>{@code id}: The ID of the Postgres Docker container.</li>
+   *             </ul>
+   * @return Result of executing closure {@code body}.
+   */
+  @SuppressWarnings(['MethodParameterTypeRequired', 'MethodReturnTypeRequired'])
+  def withLinkedContainer(def image, String dbName, List dockerArgs = [], Closure body) {
+    assert image
+
+    withDb(dbName) { port, id ->
+      image.withRun("--link ${id}:postgres ${dockerArgs.join(' ')}") {
+        return body()
+      }
+    }
+  }
+
+  /**
    * Generates a string of random digits
    * @param length Number of characters to produce
    * @param seed Random seed (defaults to system time in milliseconds)
