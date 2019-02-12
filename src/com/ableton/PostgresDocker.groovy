@@ -1,5 +1,7 @@
 package com.ableton
 
+import com.cloudbees.groovy.cps.NonCPS
+
 
 /**
  * Class for executing a closure with a connection to a PostgreSQL database in a Docker
@@ -159,6 +161,7 @@ class PostgresDocker implements Serializable {
    * @param length Number of characters to produce
    * @param seed Random seed (defaults to system time in milliseconds)
    */
+  @NonCPS
   protected static String getRandomDigitString(int length, long seed) {
     if (length <= 0) {
       throw new IllegalArgumentException('Invalid string length')
