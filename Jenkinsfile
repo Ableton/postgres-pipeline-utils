@@ -23,7 +23,7 @@ devToolsProject.run(
   publish: { data ->
     docs.publish(data['docs'], 'AbletonDevTools/postgres-pipeline-utils')
   },
-  deployWhen: { return runTheBuilds.isPushTo(['master']) },
+  deployWhen: { return devToolsProject.shouldDeploy() },
   deploy: { data ->
     String versionNumber = readFile('VERSION').trim()
     version.tag(versionNumber)
