@@ -80,6 +80,7 @@ class PostgresDocker implements Serializable {
           RUN useradd --uid ${uid} --user-group ${postgresUser}
           ENV POSTGRES_USER=${postgresUser}
           ENV POSTGRES_DB=${dbName}
+          ENV POSTGRES_HOST_AUTH_METHOD=trust
           USER ${postgresUser}
           EXPOSE 5432
           ENTRYPOINT ["/docker-entrypoint.sh", "postgres"]
