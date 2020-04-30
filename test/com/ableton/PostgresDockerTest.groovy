@@ -32,11 +32,9 @@ class PostgresDockerTest extends BasePipelineTest {
 
     helper.with {
       registerAllowedMethod('deleteDir', [], null)
-      registerAllowedMethod('dir', [String, Closure], JenkinsMocks.dir)
       registerAllowedMethod('error', [String], JenkinsMocks.error)
       registerAllowedMethod('pwd', [Map], JenkinsMocks.pwd)
       registerAllowedMethod('pwd', [], JenkinsMocks.pwd)
-      registerAllowedMethod('retry', [int, Closure], JenkinsMocks.retry)
       registerAllowedMethod('sh', [Map], JenkinsMocks.sh)
       registerAllowedMethod('sh', [String], JenkinsMocks.sh)
       registerAllowedMethod('writeFile', [Map], null)

@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
   compile 'com.cloudbees:groovy-cps:1+'
-  compile 'com.github.AbletonDevTools:jenkins-pipeline-mocks:0.7+'
+  compile 'com.github.AbletonDevTools:jenkins-pipeline-mocks:0.8+'
   compile 'org.codehaus.groovy:groovy-all:2.4.12'
 
   testCompile 'org.assertj:assertj-core:3.15+'
