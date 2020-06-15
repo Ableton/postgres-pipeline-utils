@@ -12,8 +12,7 @@ import org.junit.Test
 
 
 class PostgresDockerTest extends BasePipelineTest {
-  @SuppressWarnings('FieldTypeRequired')
-  def script
+  Object script
 
   @Override
   @Before
