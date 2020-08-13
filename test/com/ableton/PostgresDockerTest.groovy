@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
 import com.lesfurets.jenkins.unit.BasePipelineTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -16,41 +15,30 @@ class PostgresDockerTest extends BasePipelineTest {
 
   @Override
   @Before
+  @SuppressWarnings('ThrowException')
   void setUp() {
     super.setUp()
 
     this.script = loadScript('test/resources/EmptyPipeline.groovy')
     assertNotNull(script)
     script.with {
-      docker = new DockerMock()
       env = [
         BUILD_ID: '1',
         JOB_BASE_NAME: 'TestJob',
       ]
     }
 
-    helper.with {
-      registerAllowedMethod('deleteDir', [], null)
-      registerAllowedMethod('error', [String], JenkinsMocks.error)
-      registerAllowedMethod('pwd', [Map], JenkinsMocks.pwd)
-      registerAllowedMethod('pwd', [], JenkinsMocks.pwd)
-      registerAllowedMethod('sh', [Map], JenkinsMocks.sh)
-      registerAllowedMethod('sh', [String], JenkinsMocks.sh)
-      registerAllowedMethod('writeFile', [Map], null)
+    helper.registerAllowedMethod('error', [String]) { message ->
+      throw new Exception(message)
     }
-  }
-
-  @After
-  void tearDown() throws Exception {
-    JenkinsMocks.clearStaticData()
   }
 
   @Test
   void withDb() throws Exception {
-    String dataDir = JenkinsMocks.pwd(tmp: true) + '/1/postgres/data'
-    JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+    String dataDir = 'tmpDirMocked/1/postgres/data'
+    helper.addShMock('id -u', '1000', 0)
+    helper.addShMock("mkdir ${dataDir}", '', 0)
+    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script)
     boolean bodyExecuted = false
@@ -67,10 +55,10 @@ class PostgresDockerTest extends BasePipelineTest {
 
   @Test(expected = Exception)
   void withDbContainerFail() throws Exception {
-    String dataDir = JenkinsMocks.pwd(tmp: true) + '/1/postgres/data'
-    JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock("mkdir ${dataDir}", '', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
+    String dataDir = 'tmpDirMocked/1/postgres/data'
+    helper.addShMock('id -u', '1000', 0)
+    helper.addShMock("mkdir ${dataDir}", '', 0)
+    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
     PostgresDocker postgres = new PostgresDocker(script: script)
     postgres.withDb('testdb') {}
@@ -90,8 +78,8 @@ class PostgresDockerTest extends BasePipelineTest {
 
   @Test
   void withDbCustomPort() throws Exception {
-    JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+    helper.addShMock('id -u', '1000', 0)
+    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
     postgres.withDb('testdb') { port, id ->
@@ -104,8 +92,8 @@ class PostgresDockerTest extends BasePipelineTest {
   void withDbRandomPort() throws Exception {
     // Expected output given a seed of 1
     String expectedPort = '15873'
-    JenkinsMocks.addShMock('id -u', '1000', 0)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+    helper.addShMock('id -u', '1000', 0)
+    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(
       script: script,
@@ -121,8 +109,8 @@ class PostgresDockerTest extends BasePipelineTest {
   @Test
   void withDbCustomUid() throws Exception {
     // Add a mock for `id -u` that would fail if invoked
-    JenkinsMocks.addShMock('id -u', null, 1)
-    JenkinsMocks.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
+    helper.addShMock('id -u', null, 1)
+    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
     postgres.withDb('testdb') { port, id -> }
