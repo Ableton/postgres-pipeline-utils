@@ -72,7 +72,11 @@ class PostgresDocker implements Serializable {
       // POSTGRES_DB environment variable which will instruct the container to create
       // a database for us with the given name.
       String port = this.port ?: '1' + getRandomDigitString(4, randomSeed)
-      String uid = this.uid ?: script.sh(returnStdout: true, script: 'id -u').trim()
+      String uid = this.uid ?: script.sh(
+        label: 'Get user ID',
+        returnStdout: true,
+        script: 'id -u',
+      ).trim()
       script.writeFile(
         file: 'Dockerfile',
         text: """
@@ -110,7 +114,10 @@ class PostgresDocker implements Serializable {
               script.sleep 1
               // This environment variable exposed by Docker always uses the port number
               // which is exposed (ie, the postgres port).
-              script.sh "pg_isready -h \$DB_PORT_5432_TCP_ADDR"
+              script.sh(
+                label: 'Check if postgres is ready',
+                script: "pg_isready -h \$DB_PORT_5432_TCP_ADDR",
+              )
             }
           }
 
