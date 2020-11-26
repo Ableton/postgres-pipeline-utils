@@ -28,6 +28,7 @@ class PostgresDockerTest extends BasePipelineTest {
       ]
     }
 
+    helper.addShMock('id -u', '1000', 0)
     helper.registerAllowedMethod('error', [String]) { message ->
       throw new Exception(message)
     }
@@ -36,7 +37,6 @@ class PostgresDockerTest extends BasePipelineTest {
   @Test
   void withDb() throws Exception {
     String dataDir = 'tmpDirMocked/1/postgres/data'
-    helper.addShMock('id -u', '1000', 0)
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
@@ -56,7 +56,6 @@ class PostgresDockerTest extends BasePipelineTest {
   @Test(expected = Exception)
   void withDbContainerFail() throws Exception {
     String dataDir = 'tmpDirMocked/1/postgres/data'
-    helper.addShMock('id -u', '1000', 0)
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
 
@@ -78,7 +77,6 @@ class PostgresDockerTest extends BasePipelineTest {
 
   @Test
   void withDbCustomPort() throws Exception {
-    helper.addShMock('id -u', '1000', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
@@ -92,7 +90,6 @@ class PostgresDockerTest extends BasePipelineTest {
   void withDbRandomPort() throws Exception {
     // Expected output given a seed of 1
     String expectedPort = '15873'
-    helper.addShMock('id -u', '1000', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(
@@ -104,16 +101,6 @@ class PostgresDockerTest extends BasePipelineTest {
       assertEquals(expectedPort, port)
       assertEquals('mock-container', id)
     }
-  }
-
-  @Test
-  void withDbCustomUid() throws Exception {
-    // Add a mock for `id -u` that would fail if invoked
-    helper.addShMock('id -u', null, 1)
-    helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
-
-    PostgresDocker postgres = new PostgresDocker(script: script, uid: 123)
-    postgres.withDb('testdb') { port, id -> }
   }
 
   @Test(expected = AssertionError)

@@ -23,11 +23,6 @@ class PostgresDocker implements Serializable {
    */
   String postgresUser = 'jenkins'
   /**
-   * UID to use when for the Docker user mapping. If null, then the current user will be
-   * automatically determined using a shell call to <pre>id -u</pre>.
-   */
-  String uid = null
-  /**
    * Postgres version to use. This value must correspond to a valid tag name for the
    * Postgres Docker container. See: https://hub.docker.com/r/library/postgres/tags
    */
@@ -72,7 +67,7 @@ class PostgresDocker implements Serializable {
       // POSTGRES_DB environment variable which will instruct the container to create
       // a database for us with the given name.
       String port = this.port ?: '1' + getRandomDigitString(4, randomSeed)
-      String uid = this.uid ?: script.sh(
+      String uid = script.sh(
         label: 'Get user ID',
         returnStdout: true,
         script: 'id -u',
