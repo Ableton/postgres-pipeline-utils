@@ -29,6 +29,7 @@ class PostgresDockerTest extends BasePipelineTest {
     }
 
     helper.addShMock('id -u', '1000', 0)
+    helper.addShMock('id -g', '1000', 0)
     helper.registerAllowedMethod('error', [String]) { message ->
       throw new Exception(message)
     }
