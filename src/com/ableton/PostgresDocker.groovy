@@ -92,8 +92,7 @@ class PostgresDocker implements Serializable {
       )
 
       String imageName = script.env.JOB_BASE_NAME.toLowerCase()
-      @SuppressWarnings('VariableTypeRequired')
-      def postgresImage = script.docker.build(
+      Object postgresImage = script.docker.build(
         "${imageName}:${script.env.BUILD_ID}-${random}",
         '-f Dockerfile .'
       )
