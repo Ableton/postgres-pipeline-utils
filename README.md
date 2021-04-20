@@ -33,4 +33,12 @@ wrapper. Likewise, the Gradle project can be imported by an IDE like IntelliJ ID
 this, you'll need the Groovy plugin enabled in IDEA and to install Groovy SDK.
 
 
+## Maintainers
+
+This project is maintained by the following GitHub users:
+
+- [@ala-ableton](https://github.com/ala-ableton)
+- [@nre-ableton](https://github.com/nre-ableton)
+
+
 [jenkins-shared-lib-usage]: https://jenkins.io/doc/book/pipeline/shared-libraries/#using-libraries
