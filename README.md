@@ -1,8 +1,8 @@
 # postgres-pipeline-utils
 
 `postgres-pipeline-utils` is a Jenkins shared pipeline library which makes it easier to
-run commands against Postgres in a Docker container. For information on using this library
-in your Jenkins pipeline scripts, please refer to the [Jenkins shared library
+run commands with a Postgres database in a Docker container. For information on using this
+library in your Jenkins pipeline scripts, please refer to the [Jenkins shared library
 documentation][jenkins-shared-lib-usage].
 
 
@@ -25,6 +25,7 @@ the node.
 The library also makes sure that the container is fully started and ready to communicate
 with before executing the closure body. To do this, it calls `pg_isready` until it
 succeeds.
+
 
 ## Building and Testing
 
