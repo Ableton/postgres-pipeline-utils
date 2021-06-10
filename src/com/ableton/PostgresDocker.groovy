@@ -104,8 +104,9 @@ class PostgresDocker implements Serializable {
         }
       }
       script.deleteDir()
-      return bodyResult
     }
+
+    return bodyResult
   }
 
   /**
@@ -132,12 +133,15 @@ class PostgresDocker implements Serializable {
     Object image, String dbName, List dockerArgs = [], Closure body
   ) {
     assert image
+    Object bodyResult = null
 
     withDb(dbName) { port, id ->
       image.withRun("--link ${id}:postgres ${dockerArgs.join(' ')}") {
-        return body()
+        bodyResult = body()
       }
     }
+
+    return bodyResult
   }
 
   /**
