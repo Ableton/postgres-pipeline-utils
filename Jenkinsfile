@@ -1,4 +1,4 @@
-library 'ableton-utils@0.19'
+library 'ableton-utils@0.21'
 library 'groovylint@0.9'
 
 
@@ -21,7 +21,7 @@ devToolsProject.run(
     )
   },
   publish: { data ->
-    docs.publish("${data['docs']}/", 'AbletonDevTools/postgres-pipeline-utils')
+    jupiter.publishDocs("${data['docs']}/", 'AbletonDevTools/postgres-pipeline-utils')
   },
   deployWhen: { return devToolsProject.shouldDeploy() },
   deploy: { data ->
