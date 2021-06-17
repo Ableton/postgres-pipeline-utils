@@ -8,8 +8,7 @@ import com.cloudbees.groovy.cps.NonCPS
  * container.
  */
 class PostgresDocker implements Serializable {
-  @SuppressWarnings('FieldTypeRequired')
-  def script = null
+  Object script = null
 
   /**
    * Port to expose on the host for communicating with the Postgres instance. If null,
@@ -48,13 +47,11 @@ class PostgresDocker implements Serializable {
    *             </ul>
    * @return Result of executing closure {@code body}.
    */
-  @SuppressWarnings('MethodReturnTypeRequired')
-  def withDb(String dbName, Closure body) {
+  Object withDb(String dbName, Closure body) {
     assert script
     assert dbName
 
-    @SuppressWarnings('VariableTypeRequired')
-    def bodyResult = null
+    Object bodyResult = null
 
     // Get the current directory so that the closure body is executed in the right place
     String pwd = script.pwd()
@@ -107,8 +104,9 @@ class PostgresDocker implements Serializable {
         }
       }
       script.deleteDir()
-      return bodyResult
     }
+
+    return bodyResult
   }
 
   /**
@@ -131,15 +129,19 @@ class PostgresDocker implements Serializable {
    *             </ul>
    * @return Result of executing closure {@code body}.
    */
-  @SuppressWarnings(['MethodParameterTypeRequired', 'MethodReturnTypeRequired'])
-  def withLinkedContainer(def image, String dbName, List dockerArgs = [], Closure body) {
+  Object withLinkedContainer(
+    Object image, String dbName, List dockerArgs = [], Closure body
+  ) {
     assert image
+    Object bodyResult = null
 
     withDb(dbName) { port, id ->
       image.withRun("--link ${id}:postgres ${dockerArgs.join(' ')}") {
-        return body()
+        bodyResult = body()
       }
     }
+
+    return bodyResult
   }
 
   /**
