@@ -21,7 +21,7 @@ devToolsProject.run(
     )
   },
   publish: { data ->
-    jupiter.publishDocs("${data['docs']}/", 'AbletonDevTools/postgres-pipeline-utils')
+    jupiter.publishDocs("${data['docs']}/", 'Ableton/postgres-pipeline-utils')
   },
   deployWhen: { return devToolsProject.shouldDeploy() },
   deploy: { data ->
