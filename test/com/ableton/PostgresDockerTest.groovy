@@ -21,12 +21,10 @@ class PostgresDockerTest extends BasePipelineTest {
 
     this.script = loadScript('test/resources/EmptyPipeline.groovy')
     assertNotNull(script)
-    script.with {
-      env = [
-        BUILD_ID: '1',
-        JOB_BASE_NAME: 'TestJob',
-      ]
-    }
+    script.env = [
+      BUILD_ID: '1',
+      JOB_BASE_NAME: 'TestJob',
+    ]
 
     helper.addShMock('id -u', '1000', 0)
     helper.addShMock('id -g', '1000', 0)
