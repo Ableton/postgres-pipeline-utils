@@ -1,20 +1,21 @@
 package com.ableton
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertNotEquals
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+import static org.junit.jupiter.api.Assertions.assertThrows
+import static org.junit.jupiter.api.Assertions.assertTrue
 
 import com.lesfurets.jenkins.unit.BasePipelineTest
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 
 class PostgresDockerTest extends BasePipelineTest {
   Object script
 
   @Override
-  @Before
+  @BeforeEach
   @SuppressWarnings('ThrowException')
   void setUp() {
     super.setUp()
@@ -49,28 +50,28 @@ class PostgresDockerTest extends BasePipelineTest {
     assertEquals(123, bodyResult)
   }
 
-  @Test(expected = Exception)
+  @Test
   void withDbContainerFail() {
     String dataDir = 'tmpDirMocked/1/postgres/data'
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
     PostgresDocker postgres = new PostgresDocker(script: script)
 
-    postgres.withDb('testdb') {}
+    assertThrows(Exception) { postgres.withDb('testdb') {} }
   }
 
-  @Test(expected = AssertionError)
+  @Test
   void withDbNoScript() {
     PostgresDocker postgres = new PostgresDocker()
 
-    postgres.withDb('testdb') {}
+    assertThrows(AssertionError) { postgres.withDb('testdb') {} }
   }
 
-  @Test(expected = AssertionError)
+  @Test
   void withDbNoDbName() {
     PostgresDocker postgres = new PostgresDocker(script: script)
 
-    postgres.withDb('') {}
+    assertThrows(AssertionError) { postgres.withDb('') {} }
   }
 
   @Test
@@ -99,14 +100,18 @@ class PostgresDockerTest extends BasePipelineTest {
     }
   }
 
-  @Test(expected = AssertionError)
+  @Test
   void withLinkedContainerNoImage() {
-    new PostgresDocker(script: script).withLinkedContainer(null, 'testdb') {}
+    assertThrows(AssertionError) {
+      new PostgresDocker(script: script).withLinkedContainer(null, 'testdb') {}
+    }
   }
 
-  @Test(expected = AssertionError)
+  @Test
   void withLinkedContainerNoDbName() {
-    new PostgresDocker(script: script).withLinkedContainer('mock-image', null) {}
+    assertThrows(AssertionError) {
+      new PostgresDocker(script: script).withLinkedContainer('mock-image', null) {}
+    }
   }
 
   @Test
@@ -128,8 +133,8 @@ class PostgresDockerTest extends BasePipelineTest {
     )
   }
 
-  @Test(expected = IllegalArgumentException)
+  @Test
   void getRandomDigitStringInvalidLength() {
-    PostgresDocker.getRandomDigitString(0, 0)
+    assertThrows(IllegalArgumentException) { PostgresDocker.getRandomDigitString(0, 0) }
   }
 }
