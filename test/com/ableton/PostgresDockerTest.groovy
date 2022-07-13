@@ -21,10 +21,7 @@ class PostgresDockerTest extends BasePipelineTest {
 
     this.script = loadScript('test/resources/EmptyPipeline.groovy')
     assertNotNull(script)
-    script.env = [
-      BUILD_ID: '1',
-      JOB_BASE_NAME: 'TestJob',
-    ]
+    script.env = [BUILD_ID: '1', JOB_BASE_NAME: 'TestJob']
 
     helper.addShMock('id -u', '1000', 0)
     helper.addShMock('id -g', '1000', 0)
@@ -92,9 +89,7 @@ class PostgresDockerTest extends BasePipelineTest {
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
 
     PostgresDocker postgres = new PostgresDocker(
-      script: script,
-      port: null,
-      randomSeed: 1,
+      script: script, port: null, randomSeed: 1
     )
     postgres.withDb('testdb') { port, id ->
       assertEquals(expectedPort, port)
