@@ -31,7 +31,7 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test
-  void withDb() throws Exception {
+  void withDb() {
     String dataDir = 'tmpDirMocked/1/postgres/data'
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
@@ -50,7 +50,7 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test(expected = Exception)
-  void withDbContainerFail() throws Exception {
+  void withDbContainerFail() {
     String dataDir = 'tmpDirMocked/1/postgres/data'
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
@@ -60,21 +60,21 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test(expected = AssertionError)
-  void withDbNoScript() throws Exception {
+  void withDbNoScript() {
     PostgresDocker postgres = new PostgresDocker()
 
     postgres.withDb('testdb') {}
   }
 
   @Test(expected = AssertionError)
-  void withDbNoDbName() throws Exception {
+  void withDbNoDbName() {
     PostgresDocker postgres = new PostgresDocker(script: script)
 
     postgres.withDb('') {}
   }
 
   @Test
-  void withDbCustomPort() throws Exception {
+  void withDbCustomPort() {
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
 
@@ -85,7 +85,7 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test
-  void withDbRandomPort() throws Exception {
+  void withDbRandomPort() {
     // Expected output given a seed of 1
     String expectedPort = '15873'
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
@@ -100,22 +100,22 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test(expected = AssertionError)
-  void withLinkedContainerNoImage() throws Exception {
+  void withLinkedContainerNoImage() {
     new PostgresDocker(script: script).withLinkedContainer(null, 'testdb') {}
   }
 
   @Test(expected = AssertionError)
-  void withLinkedContainerNoDbName() throws Exception {
+  void withLinkedContainerNoDbName() {
     new PostgresDocker(script: script).withLinkedContainer('mock-image', null) {}
   }
 
   @Test
-  void getRandomDigitString() throws Exception {
+  void getRandomDigitString() {
     assertEquals('0897531194', PostgresDocker.getRandomDigitString(10, 0))
   }
 
   @Test
-  void getRandomDigitStringIsRandom() throws Exception {
+  void getRandomDigitStringIsRandom() {
     // Ensure that allocating two objects in rapid succession will yield two different
     // random number generators. Naively seeding the random number generator with
     // System.currentTimeMillis() would not guarantee this to be the case.
@@ -129,7 +129,7 @@ class PostgresDockerTest extends BasePipelineTest {
   }
 
   @Test(expected = IllegalArgumentException)
-  void getRandomDigitStringInvalidLength() throws Exception {
+  void getRandomDigitStringInvalidLength() {
     PostgresDocker.getRandomDigitString(0, 0)
   }
 }
