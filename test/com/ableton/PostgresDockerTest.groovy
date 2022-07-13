@@ -35,9 +35,9 @@ class PostgresDockerTest extends BasePipelineTest {
     String dataDir = 'tmpDirMocked/1/postgres/data'
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
-
     PostgresDocker postgres = new PostgresDocker(script: script)
     boolean bodyExecuted = false
+
     int bodyResult = postgres.withDb('testdb') { port, id ->
       bodyExecuted = true
       assertEquals('5432', port)
@@ -54,28 +54,30 @@ class PostgresDockerTest extends BasePipelineTest {
     String dataDir = 'tmpDirMocked/1/postgres/data'
     helper.addShMock("mkdir ${dataDir}", '', 0)
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 1)
-
     PostgresDocker postgres = new PostgresDocker(script: script)
+
     postgres.withDb('testdb') {}
   }
 
   @Test(expected = AssertionError)
   void withDbNoScript() throws Exception {
     PostgresDocker postgres = new PostgresDocker()
+
     postgres.withDb('testdb') {}
   }
 
   @Test(expected = AssertionError)
   void withDbNoDbName() throws Exception {
     PostgresDocker postgres = new PostgresDocker(script: script)
+
     postgres.withDb('') {}
   }
 
   @Test
   void withDbCustomPort() throws Exception {
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
-
     PostgresDocker postgres = new PostgresDocker(script: script, port: 1234)
+
     postgres.withDb('testdb') { port, id ->
       assertEquals('1234', port)
       assertEquals('mock-container', id)
@@ -87,10 +89,10 @@ class PostgresDockerTest extends BasePipelineTest {
     // Expected output given a seed of 1
     String expectedPort = '15873'
     helper.addShMock("pg_isready -h \$DB_PORT_5432_TCP_ADDR", '', 0)
-
     PostgresDocker postgres = new PostgresDocker(
       script: script, port: null, randomSeed: 1
     )
+
     postgres.withDb('testdb') { port, id ->
       assertEquals(expectedPort, port)
       assertEquals('mock-container', id)
@@ -119,6 +121,7 @@ class PostgresDockerTest extends BasePipelineTest {
     // System.currentTimeMillis() would not guarantee this to be the case.
     PostgresDocker pd1 = new PostgresDocker(script: script)
     PostgresDocker pd2 = new PostgresDocker(script: script)
+
     assertNotEquals(
       pd1.getRandomDigitString(4, pd1.randomSeed),
       pd2.getRandomDigitString(4, pd2.randomSeed)
