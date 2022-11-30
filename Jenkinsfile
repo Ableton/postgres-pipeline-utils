@@ -4,7 +4,7 @@ library(identifier: 'groovylint@0.13', changelog: false)
 
 devToolsProject.run(
   test: { data ->
-    parallel(failFast: false,
+    parallel(
       groovydoc: {
         data['docs'] = groovydoc.generate()
       },
