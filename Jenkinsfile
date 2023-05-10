@@ -1,8 +1,9 @@
-library(identifier: 'ableton-utils@0.22', changelog: false)
+library(identifier: 'ableton-utils@0.23', changelog: false)
 library(identifier: 'groovylint@0.13', changelog: false)
 
 
 devToolsProject.run(
+  defaultBranch: 'master',
   test: { data ->
     parallel(
       groovydoc: {
@@ -23,7 +24,6 @@ devToolsProject.run(
   publish: { data ->
     jupiter.publishDocs("${data['docs']}/", 'Ableton/postgres-pipeline-utils')
   },
-  deployWhen: { return devToolsProject.shouldDeploy() },
   deploy: { data ->
     String versionNumber = readFile('VERSION').trim()
     version.tag(versionNumber)
