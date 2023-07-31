@@ -14,7 +14,7 @@ devToolsProject.run(
       },
       junit: {
         try {
-          sh './gradlew test'
+          sh './gradlew test --warning-mode fail'
         } finally {
           junit 'build/test-results/**/*.xml'
         }
