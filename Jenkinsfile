@@ -3,7 +3,7 @@ library(identifier: 'groovylint@0.13', changelog: false)
 
 
 devToolsProject.run(
-  defaultBranch: 'master',
+  defaultBranch: 'main',
   test: { data ->
     parallel(
       groovydoc: {

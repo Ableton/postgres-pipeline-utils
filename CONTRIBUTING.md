@@ -12,5 +12,5 @@ the following criteria:
 
 
 [cla]: http://ableton.github.io/cla/
-[jenkinsfile]: https://github.com/AbletonDevTools/postgres-pipeline-utils/blob/master/Jenkinsfile
-[readme]: https://github.com/AbletonDevTools/postgres-pipeline-utils/blob/master/README.md
+[jenkinsfile]: https://github.com/AbletonDevTools/postgres-pipeline-utils/blob/main/Jenkinsfile
+[readme]: https://github.com/AbletonDevTools/postgres-pipeline-utils/blob/main/README.md
