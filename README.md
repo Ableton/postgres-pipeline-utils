@@ -11,6 +11,8 @@ documentation][jenkins-shared-lib-usage].
 Example usage of this library might look something like this:
 
 ```groovy
+@Library('postgres-pipeline-utils@x.y.z') _
+
 stage('Test') {
   postgres.withDb('testdb', '9.6') {
     sh 'run-db-tests.sh'
