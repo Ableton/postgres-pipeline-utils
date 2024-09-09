@@ -1,5 +1,5 @@
 library(identifier: 'ableton-utils@0.23', changelog: false)
-library(identifier: 'groovylint@0.13', changelog: false)
+library(identifier: 'groovylint@0.15', changelog: false)
 
 
 devToolsProject.run(
