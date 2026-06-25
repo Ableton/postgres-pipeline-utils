@@ -1,5 +1,5 @@
 library(identifier: 'ableton-utils@0.29', changelog: false)
-library(identifier: 'groovylint@0.16', changelog: false)
+library(identifier: 'groovylint@0.18', changelog: false)
 
 
 devToolsProject.run(
@@ -10,7 +10,7 @@ devToolsProject.run(
         data['docs'] = groovydoc.generate()
       },
       groovylint: {
-        groovylint.check('./Jenkinsfile,./*.gradle,**/*.groovy')
+        groovylint.check(includesPattern: './Jenkinsfile,./*.gradle,**/*.groovy')
       },
       junit: {
         junitUtils.run(testResults: 'build/test-results/**/*.xml') {
